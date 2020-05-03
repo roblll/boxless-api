@@ -3,11 +3,14 @@ const morgan = require("morgan");
 
 const PORT = process.env.PORT || 3000;
 const app = express();
+const path = require("path");
 
 app.use(morgan("tiny"));
 
-app.get("/", (req, res, next) => {
-  return res.json("Boxless");
+app.use(express.static(path.join(__dirname, "build")));
+
+app.get("*", (req, res, next) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
 app.use((req, res, next) => {
@@ -22,6 +25,10 @@ app.use((err, req, res, next) => {
     message: err.message,
     error: app.get("env") == "development" ? err : {},
   });
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname + "/build/index.html"));
 });
 
 app.listen(PORT, () => {
