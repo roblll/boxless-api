@@ -11,7 +11,9 @@ app.use(morgan("tiny"));
 app.use(express.static(path.join(__dirname, "build")));
 
 app.get("/api/vid", (req, res) => {
-  getChart("hot-100", "2016-08-27", (err, chart) => {
+  const date = "2019-08-27";
+
+  getChart("hot-100", date, (err, chart) => {
     if (err) {
       console.log(err);
       return res.json({ err });
