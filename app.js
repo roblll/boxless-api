@@ -1,5 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
+const { getChart } = require("billboard-top-100");
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -10,7 +11,16 @@ app.use(morgan("tiny"));
 app.use(express.static(path.join(__dirname, "build")));
 
 app.get("/api/vid", (req, res) => {
-  return res.json({ test: "test" });
+  getChart("hot-100", "2016-08-27", (err, chart) => {
+    if (err) {
+      console.log(err);
+      return res.json({ err });
+    } else {
+      if (chart.songs.length < 1) return res.json({ err });
+      const title = chart.songs[0].title;
+      return res.json({ title });
+    }
+  });
 });
 
 app.get("*", (req, res, next) => {
