@@ -13,7 +13,7 @@ const { getSearchResult } = require("./yts/yts");
 app.use(express.static(path.join(__dirname, "build")));
 
 app.get("/api/vid", (req, res) => {
-  const date = "2019-08-27";
+  const date = "2020-05-08";
 
   getChart("hot-100", date, (err, chart) => {
     if (err) {
@@ -23,8 +23,13 @@ app.get("/api/vid", (req, res) => {
       if (chart.songs.length < 1) return res.json({ err });
       const title = chart.songs[0].title;
       const artist = chart.songs[0].artist;
-      const ytsTest = getSearchResult(title, artist);
-      return res.json({ title, ytsTest });
+      const ytsTest = getSearchResult(
+        title,
+        artist,
+        (vidId, title, artist, thumbnail) => {
+          return res.json({ vidId, title, artist, thumbnail });
+        }
+      );
     }
   });
 });

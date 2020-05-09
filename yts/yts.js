@@ -4,7 +4,7 @@ const cheerio = require("cheerio");
 const YOUTUBE_BASE_URL = "http://www.youtube.com";
 const YOUTUBE_SEARCH_URL = `${YOUTUBE_BASE_URL}/results?search_query=`;
 
-function getSearchResult(title, artist) {
+function getSearchResult(title, artist, cb) {
   const formattedSearchTerm = `${title.replace(/ /g, "+")}+${artist.replace(
     / /g,
     "+"
@@ -16,14 +16,14 @@ function getSearchResult(title, artist) {
       return;
     }
     const $ = cheerio.load(html);
-    const vidIDs = [];
+    const vidIds = [];
     $("div .yt-lockup").each(function (index, elem) {
-      vidIDs[index] = elem.attribs["data-context-item-id"];
+      vidIds[index] = elem.attribs["data-context-item-id"];
     });
-    vidID = vidIDs[0];
-    return { vidID };
+    vidId = vidIds[0];
+    cb(vidId, title, artist, "test");
   });
-  return { title, artist };
+  // return { title, artist };
 }
 
 module.exports = {
