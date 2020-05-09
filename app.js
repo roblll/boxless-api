@@ -8,6 +8,8 @@ const path = require("path");
 
 app.use(morgan("tiny"));
 
+const { getSearchResult } = require("./yts/yts");
+
 app.use(express.static(path.join(__dirname, "build")));
 
 app.get("/api/vid", (req, res) => {
@@ -20,7 +22,9 @@ app.get("/api/vid", (req, res) => {
     } else {
       if (chart.songs.length < 1) return res.json({ err });
       const title = chart.songs[0].title;
-      return res.json({ title });
+      const artist = chart.songs[0].artist;
+      const ytsTest = getSearchResult(title, artist);
+      return res.json({ title, ytsTest });
     }
   });
 });
