@@ -15,15 +15,14 @@ function getSearchResult(title, artist, cb) {
     if (error) {
       return;
     }
-    const $ = cheerio.load(html);
+    let $ = cheerio.load(html);
     const vidIds = [];
     $("div .yt-lockup").each(function (index, elem) {
       vidIds[index] = elem.attribs["data-context-item-id"];
     });
     vidId = vidIds[0];
-    cb(vidId, title, artist, "test");
+    cb(vidId, title, artist);
   });
-  // return { title, artist };
 }
 
 module.exports = {
