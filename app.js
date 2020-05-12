@@ -1,5 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
+const cors = require("cors");
 const { getChart } = require("billboard-top-100");
 
 const PORT = process.env.PORT || 3000;
@@ -7,6 +8,7 @@ const app = express();
 const path = require("path");
 
 app.use(morgan("tiny"));
+app.use(cors());
 
 const { getSearchResult } = require("./yts/yts");
 
