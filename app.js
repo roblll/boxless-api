@@ -3,7 +3,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const { getChart } = require("billboard-top-100");
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 const app = express();
 const path = require("path");
 
