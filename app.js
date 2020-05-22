@@ -1,12 +1,14 @@
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 const { getChart } = require("billboard-top-100");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
 const path = require("path");
 
+app.use(bodyParser.json());
 app.use(morgan("tiny"));
 app.use(cors());
 
