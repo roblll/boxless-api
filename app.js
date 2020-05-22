@@ -13,13 +13,12 @@ app.use(morgan("tiny"));
 app.use(cors());
 
 const { getSearchResult } = require("./yts/yts");
+const { getRandDate } = require("./utils/utils");
 
 app.use(express.static(path.join(__dirname, "build")));
 
 app.get("/api/vid", (req, res) => {
-  const { dateMin, dateMax } = req.query;
-  console.log(dateMin);
-  const date = "2019-04-10";
+  const date = getRandDate(req.query);
 
   getChart("hot-100", date, (err, chart) => {
     if (err) {
