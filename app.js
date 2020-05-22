@@ -13,14 +13,15 @@ app.use(morgan("tiny"));
 app.use(cors());
 
 const { getSearchResult } = require("./yts/yts");
-const { getRandDate } = require("./utils/utils");
+const { getRandDate, getChartsSelected } = require("./utils/utils");
 
 app.use(express.static(path.join(__dirname, "build")));
 
 app.get("/api/vid", (req, res) => {
   const date = getRandDate(req.query);
+  const chart = getChartsSelected(req.query);
 
-  getChart("hot-100", date, (err, chart) => {
+  getChart(chart, date, (err, chart) => {
     if (err) {
       console.log(err);
       return res.json({ err });
