@@ -51,7 +51,32 @@ const getChartsSelected = (query) => {
   return chart;
 };
 
+const getSongSearch = (chart, query) => {
+  const { rankMin, rankMax, lyrics, clean, karaoke } = query;
+  const rank = getRank(rankMin, rankMax, chart);
+  let options = "";
+  if (lyrics === "true") options += " lyrics";
+  if (clean === "true") options += " clean";
+  if (karaoke === "true") options += " karaoke";
+  const searchTerm = `${chart.songs[rank].title} ${chart.songs[rank].artist} ${options}`;
+  return {
+    searchTerm,
+    title: `${chart.songs[rank].title}`,
+    artist: `${chart.songs[rank].artist}`,
+  };
+};
+
+const getRank = (rankMin, rankMax, chart) => {
+  const chartMax = chart.songs.length;
+  rankMin = Number(rankMin);
+  rankMax = Number(rankMax);
+  if (chartMax < rankMax) rankMax = chartMax;
+  if (rankMin > chartMax) rankMin = chartMax;
+  return getRandNum(rankMin, rankMax);
+};
+
 module.exports = {
   getRandDate,
   getChartsSelected,
+  getSongSearch,
 };

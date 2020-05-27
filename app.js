@@ -13,7 +13,11 @@ app.use(morgan("tiny"));
 app.use(cors());
 
 const { getSearchResult } = require("./yts/yts");
-const { getRandDate, getChartsSelected } = require("./utils/utils");
+const {
+  getRandDate,
+  getChartsSelected,
+  getSongSearch,
+} = require("./utils/utils");
 
 app.use(express.static(path.join(__dirname, "build")));
 
@@ -27,9 +31,10 @@ app.get("/api/vid", (req, res) => {
       return res.json({ err });
     } else {
       if (chart.songs.length < 1) return res.json({ err });
-      const title = chart.songs[0].title;
-      const artist = chart.songs[0].artist;
-      getSearchResult(title, artist, (vidId, title, artist) => {
+      const songSearch = getSongSearch(chart, req.query);
+      // const title = chart.songs[0].title;
+      // const artist = chart.songs[0].artist;
+      getSearchResult(songSearch, (vidId, title, artist) => {
         return res.json({ vidId, title, artist });
       });
     }

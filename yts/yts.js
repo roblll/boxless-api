@@ -4,11 +4,10 @@ const cheerio = require("cheerio");
 const YOUTUBE_BASE_URL = "http://www.youtube.com";
 const YOUTUBE_SEARCH_URL = `${YOUTUBE_BASE_URL}/results?search_query=`;
 
-function getSearchResult(title, artist, cb) {
-  const formattedSearchTerm = `${title.replace(/ /g, "+")}+${artist.replace(
-    / /g,
-    "+"
-  )}`;
+function getSearchResult(search, cb) {
+  const { searchTerm, title, artist } = search;
+
+  const formattedSearchTerm = searchTerm.replace(/ /g, "+");
   const requestURL = `${YOUTUBE_SEARCH_URL}${formattedSearchTerm}`;
 
   request(requestURL, (error, response, html) => {
