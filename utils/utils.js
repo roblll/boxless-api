@@ -54,6 +54,8 @@ const getChartsSelected = (query) => {
 const getSongSearch = (chart, query) => {
   const { rankMin, rankMax, lyrics, clean, karaoke } = query;
   const rank = getRank(rankMin, rankMax, chart);
+  console.log(chart.songs.length);
+  console.log(rank);
   let options = "";
   if (lyrics === "true") options += " lyrics";
   if (clean === "true") options += " clean";

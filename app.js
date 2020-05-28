@@ -32,13 +32,21 @@ app.get("/api/vid", (req, res) => {
     } else {
       if (chart.songs.length < 1) return res.json({ err });
       const songSearch = getSongSearch(chart, req.query);
-      // const title = chart.songs[0].title;
-      // const artist = chart.songs[0].artist;
       getSearchResult(songSearch, (vidId, title, artist) => {
         return res.json({ vidId, title, artist });
       });
     }
   });
+});
+
+app.get("/api/test", async (req, res) => {
+  try {
+    const search = { searchTerm: "ariana grande 7 rings" };
+    const vid = await getSearchResult(search);
+    return res.json({ vid });
+  } catch (e) {
+    return res.json(e);
+  }
 });
 
 app.get("*", (req, res, next) => {
