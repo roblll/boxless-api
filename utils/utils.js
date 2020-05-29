@@ -59,7 +59,7 @@ const getSongSearch = (chart, query) => {
   if (clean === "true") options += " clean";
   if (karaoke === "true") options += " karaoke";
   const title = chart[rank].title;
-  const artist = chart[rank].artist_name;
+  const artist = chart[rank].artist;
   const searchTerm = `${title} ${artist} ${options}`;
   return {
     searchTerm,

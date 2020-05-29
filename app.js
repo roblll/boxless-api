@@ -2,7 +2,6 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-// const { getChart } = require("billboard-top-100");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -22,28 +21,8 @@ const {
 
 app.use(express.static(path.join(__dirname, "build")));
 
-app.get("/api/vid", (req, res) => {
-  const date = getRandDate(req.query);
-  const chart = getChartsSelected(req.query);
-
-  getChart(chart, date, (err, chart) => {
-    if (err) {
-      console.log(err);
-      return res.json({ err });
-    } else {
-      if (chart.songs.length < 1) return res.json({ err });
-      const songSearch = getSongSearch(chart, req.query);
-      getSearchResult(songSearch, (vidId, title, artist) => {
-        return res.json({ vidId, title, artist });
-      });
-    }
-  });
-});
-
-app.get("/api/test", async (req, res) => {
+app.get("/api/vid", async (req, res) => {
   try {
-    console.log("a");
-
     const date = getRandDate(req.query);
     const chartName = getChartsSelected(req.query);
 
@@ -51,9 +30,9 @@ app.get("/api/test", async (req, res) => {
 
     const songSearch = getSongSearch(chart, req.query);
 
-    const vid = await getSearchResult(songSearch);
+    const { vidId, title, artist } = await getSearchResult(songSearch);
 
-    return res.json({ vid });
+    return res.json({ vidId, title, artist });
   } catch (e) {
     return res.json({ error: e });
   }
