@@ -2,7 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const { getChart } = require("billboard-top-100");
+// const { getChart } = require("billboard-top-100");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -13,6 +13,7 @@ app.use(morgan("tiny"));
 app.use(cors());
 
 const { getSearchResult } = require("./yts/yts");
+const { getChart } = require("./bbs/bbs");
 const {
   getRandDate,
   getChartsSelected,
@@ -41,11 +42,20 @@ app.get("/api/vid", (req, res) => {
 
 app.get("/api/test", async (req, res) => {
   try {
-    const search = { searchTerm: "ariana grande 7 rings" };
-    const vid = await getSearchResult(search);
+    console.log("a");
+
+    const date = getRandDate(req.query);
+    const chartName = getChartsSelected(req.query);
+
+    const chart = await getChart(chartName, date);
+
+    const songSearch = getSongSearch(chart, req.query);
+
+    const vid = await getSearchResult(songSearch);
+
     return res.json({ vid });
   } catch (e) {
-    return res.json(e);
+    return res.json({ error: e });
   }
 });
 

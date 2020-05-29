@@ -54,22 +54,22 @@ const getChartsSelected = (query) => {
 const getSongSearch = (chart, query) => {
   const { rankMin, rankMax, lyrics, clean, karaoke } = query;
   const rank = getRank(rankMin, rankMax, chart);
-  console.log(chart.songs.length);
-  console.log(rank);
   let options = "";
   if (lyrics === "true") options += " lyrics";
   if (clean === "true") options += " clean";
   if (karaoke === "true") options += " karaoke";
-  const searchTerm = `${chart.songs[rank].title} ${chart.songs[rank].artist} ${options}`;
+  const title = chart[rank].title;
+  const artist = chart[rank].artist_name;
+  const searchTerm = `${title} ${artist} ${options}`;
   return {
     searchTerm,
-    title: `${chart.songs[rank].title}`,
-    artist: `${chart.songs[rank].artist}`,
+    title,
+    artist,
   };
 };
 
 const getRank = (rankMin, rankMax, chart) => {
-  const chartMax = chart.songs.length;
+  const chartMax = chart.length;
   rankMin = Number(rankMin);
   rankMax = Number(rankMax);
   if (chartMax < rankMax) rankMax = chartMax;
