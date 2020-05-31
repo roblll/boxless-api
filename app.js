@@ -17,6 +17,7 @@ const {
   getRandDate,
   getChartsSelected,
   getSongSearch,
+  getPickSongs,
 } = require("./utils/utils");
 
 app.use(express.static(path.join(__dirname, "build")));
@@ -45,13 +46,28 @@ app.get("/api/pickvids", async (req, res) => {
 
     const chart = await getChart(chartName, date);
 
-    // const pickSongs = getPickSongs(chart, req.query);
+    const {
+      title1,
+      title2,
+      artist1,
+      artist2,
+      searchTerm1,
+      searchTerm2,
+    } = getPickSongs(chart, req.query);
 
-    return res.json({ test: "test" });
+    const vid1 = await getSearchResult({
+      title: title1,
+      artist: artist1,
+      searchTerm: searchTerm1,
+    });
 
-    // const { vidId, title, artist } = await getSearchResult(songSearch);
+    const vid2 = await getSearchResult({
+      title: title2,
+      artist: artist2,
+      searchTerm: searchTerm2,
+    });
 
-    // return res.json({ vidId, title, artist });
+    return res.json({ vid1, vid2 });
   } catch (e) {
     return res.json({ error: e });
   }
