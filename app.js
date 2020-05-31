@@ -38,6 +38,25 @@ app.get("/api/vid", async (req, res) => {
   }
 });
 
+app.get("/api/pickvids", async (req, res) => {
+  try {
+    const date = getRandDate(req.query);
+    const chartName = getChartsSelected(req.query);
+
+    const chart = await getChart(chartName, date);
+
+    // const pickSongs = getPickSongs(chart, req.query);
+
+    return res.json({ test: "test" });
+
+    // const { vidId, title, artist } = await getSearchResult(songSearch);
+
+    // return res.json({ vidId, title, artist });
+  } catch (e) {
+    return res.json({ error: e });
+  }
+});
+
 app.get("*", (req, res, next) => {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
