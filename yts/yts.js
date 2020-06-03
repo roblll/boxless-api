@@ -50,7 +50,32 @@ async function getSearchResult(search) {
 
 async function getSearchVids(searchTerm) {
   try {
-    return { testing: searchTerm };
+    const formattedSearchTerm = searchTerm.replace(/ /g, "+");
+    const requestURL = `${YOUTUBE_SEARCH_URL}${formattedSearchTerm}`;
+
+    const response = await axios.get(requestURL);
+    const html = response.data;
+
+    const $ = cheerio.load(html);
+    const vidIds = [];
+    const vidTitles = [];
+    const vids = [];
+    $("div .yt-lockup").each(function (index, elem) {
+      vidIds[index] = elem.attribs["data-context-item-id"];
+    });
+    $("a").each(function (index, elem) {
+      // console.log(elem);
+      if (
+        elem.attribs.class ===
+        "yt-uix-tile-link yt-ui-ellipsis yt-ui-ellipsis-2 yt-uix-sessionlink      spf-link "
+      ) {
+        vidTitles.push(elem.attribs.title);
+      }
+    });
+    for (i = 0; i < vidIds.length; i++) {
+      vids.push({ vidId: vidIds[i], title: vidTitles[i] });
+    }
+    return { searchTerm, vids };
   } catch (e) {
     console.log(e);
   }

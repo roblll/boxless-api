@@ -75,7 +75,7 @@ app.get("/api/pickvids", async (req, res) => {
 
 app.get("/api/searchvids", async (req, res) => {
   try {
-    const searchTerm = "abcde";
+    const searchTerm = "ariana grande 7 rings";
     const searchResults = await getSearchVids(searchTerm);
     return res.json({ test: searchResults });
   } catch (e) {
