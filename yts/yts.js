@@ -48,9 +48,9 @@ async function getSearchResult(search) {
   }
 }
 
-async function getSearchVids() {
+async function getSearchVids(searchTerm) {
   try {
-    return { testing: "testing" };
+    return { testing: searchTerm };
   } catch (e) {
     console.log(e);
   }
