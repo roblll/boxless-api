@@ -73,6 +73,14 @@ app.get("/api/pickvids", async (req, res) => {
   }
 });
 
+app.get("/api/searchvids", async (req, res) => {
+  try {
+    return res.json({ test: "test" });
+  } catch (e) {
+    return res.json({ error: e });
+  }
+});
+
 app.get("*", (req, res, next) => {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
