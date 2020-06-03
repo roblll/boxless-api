@@ -48,6 +48,15 @@ async function getSearchResult(search) {
   }
 }
 
+async function getSearchVids() {
+  try {
+    return { testing: "testing" };
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 module.exports = {
   getSearchResult,
+  getSearchVids,
 };

@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 app.use(morgan("tiny"));
 app.use(cors());
 
-const { getSearchResult } = require("./yts/yts");
+const { getSearchResult, getSearchVids } = require("./yts/yts");
 const { getChart } = require("./bbs/bbs");
 const {
   getRandDate,
@@ -75,7 +75,8 @@ app.get("/api/pickvids", async (req, res) => {
 
 app.get("/api/searchvids", async (req, res) => {
   try {
-    return res.json({ test: "test" });
+    const searchResults = await getSearchVids();
+    return res.json({ test: searchResults });
   } catch (e) {
     return res.json({ error: e });
   }
