@@ -73,7 +73,9 @@ async function getSearchVids(searchTerm) {
       }
     });
     for (i = 0; i < vidIds.length; i++) {
-      vids.push({ vidId: vidIds[i], title: vidTitles[i] });
+      if (vidIds[i] && vidTitles[i]) {
+        vids.push({ vidId: vidIds[i], title: vidTitles[i] });
+      }
     }
     return { searchTerm, vids };
   } catch (e) {
