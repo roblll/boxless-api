@@ -77,7 +77,11 @@ async function getSearchVids(searchTerm) {
         vids.push({ vidId: vidIds[i], title: vidTitles[i] });
       }
     }
-    return { searchTerm, vids };
+    if (vids.length === 0) {
+      return { searchTerm, vids: undefined };
+    } else {
+      return { searchTerm, vids };
+    }
   } catch (e) {
     console.log(e);
   }
