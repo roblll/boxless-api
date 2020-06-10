@@ -75,7 +75,8 @@ app.get("/api/pickvids", async (req, res) => {
 
 app.get("/api/searchvids", async (req, res) => {
   try {
-    const searchTerm = "ariana grande 7 rings";
+    const searchTerm = req.query.search.replace(/%/g, " ");
+    console.log(searchTerm);
     const searchResults = await getSearchVids(searchTerm);
     return res.json({ searchResults });
   } catch (e) {
