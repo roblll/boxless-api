@@ -55,17 +55,23 @@ app.get("/api/pickvids", async (req, res) => {
       searchTerm2,
     } = getPickSongs(chart, req.query);
 
-    const vid1 = await getSearchResult({
-      title: title1,
-      artist: artist1,
-      searchTerm: searchTerm1,
-    });
+    let vid1 = undefined;
+    let vid2 = undefined;
+    let i = 0;
 
-    const vid2 = await getSearchResult({
-      title: title2,
-      artist: artist2,
-      searchTerm: searchTerm2,
-    });
+    while (vid1 === undefined || vid2 === undefined) {
+      vid1 = await getSearchResult({
+        title: title1,
+        artist: artist1,
+        searchTerm: searchTerm1,
+      });
+      vid2 = await getSearchResult({
+        title: title2,
+        artist: artist2,
+        searchTerm: searchTerm2,
+      });
+      i += 1;
+    }
 
     return res.json({ vid1, vid2 });
   } catch (e) {
@@ -76,7 +82,6 @@ app.get("/api/pickvids", async (req, res) => {
 app.get("/api/searchvids", async (req, res) => {
   try {
     const searchTerm = req.query.search.replace(/%/g, " ");
-    console.log(searchTerm);
     const searchResults = await getSearchVids(searchTerm);
     return res.json({ searchResults });
   } catch (e) {

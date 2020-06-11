@@ -40,9 +40,19 @@ async function getSearchResult(search) {
     $("div .yt-lockup").each(function (index, elem) {
       vidIds[index] = elem.attribs["data-context-item-id"];
     });
-    vidId = vidIds[0];
+    let vidId = "";
 
-    return { vidId, title, artist };
+    for (let i = 0; i < vidIds.length; i++) {
+      if (vidIds[i]) {
+        vidId = vidIds[i];
+        break;
+      }
+    }
+    if (vidId === "") {
+      return undefined;
+    } else {
+      return { vidId, title, artist };
+    }
   } catch (e) {
     console.log(e);
   }
@@ -64,7 +74,6 @@ async function getSearchVids(searchTerm) {
       vidIds[index] = elem.attribs["data-context-item-id"];
     });
     $("a").each(function (index, elem) {
-      // console.log(elem);
       if (
         elem.attribs.class ===
         "yt-uix-tile-link yt-ui-ellipsis yt-ui-ellipsis-2 yt-uix-sessionlink      spf-link "
