@@ -55,23 +55,18 @@ app.get("/api/pickvids", async (req, res) => {
       searchTerm2,
     } = getPickSongs(chart, req.query);
 
-    let vid1 = undefined;
-    let vid2 = undefined;
-    let i = 0;
-
-    while (vid1 === undefined || vid2 === undefined) {
-      vid1 = await getSearchResult({
+    let [vid1, vid2] = await Promise.all([
+      getSearchResult({
         title: title1,
         artist: artist1,
         searchTerm: searchTerm1,
-      });
-      vid2 = await getSearchResult({
+      }),
+      getSearchResult({
         title: title2,
         artist: artist2,
         searchTerm: searchTerm2,
-      });
-      i += 1;
-    }
+      }),
+    ]);
 
     return res.json({ vid1, vid2 });
   } catch (e) {
