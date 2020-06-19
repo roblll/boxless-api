@@ -70,8 +70,13 @@ async function getChart(name, date) {
       return {};
     }
   } catch (e) {
-    console.log("BBS ERROR!!!");
-    return "There was an error in bbs";
+    // console.log("BBS ERROR!!!");
+    // console.log(e);
+    // return "There was an error in bbs";
+    console.log("bbs error");
+    // return e;
+    // console.log(e.message);
+    throw e;
   }
 }
 

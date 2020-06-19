@@ -48,13 +48,14 @@ async function getSearchResult(search) {
         break;
       }
     }
+
     if (vidId === "") {
       return undefined;
     } else {
       return { vidId, title, artist };
     }
   } catch (e) {
-    console.log(e);
+    return undefined;
   }
 }
 
