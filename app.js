@@ -45,69 +45,6 @@ app.get("/api/vid", async (req, res) => {
   }
 });
 
-app.get("/api/testyts", async (req, res) => {
-  try {
-    const date = getRandDate(req.query);
-    const chartName = getChartsSelected(req.query);
-    console.log(chartName);
-
-    console.log("getChart");
-    const chart = await getChart(chartName, date);
-
-    console.log("getSongSearch");
-    const songSearch = getSongSearch(chart, req.query);
-    console.log(songSearch);
-
-    console.log("getSearchResult");
-    const vid = await getSearchResult(songSearch);
-
-    console.log("return");
-    if (vid) {
-      const { vidId, title, artist } = vid;
-      return res.json({ vidId, title, artist });
-    } else {
-      return res.json({});
-    }
-  } catch (e) {
-    return res.json({ error: e });
-  }
-});
-
-app.get("/api/pickvids", async (req, res) => {
-  try {
-    const date = getRandDate(req.query);
-    const chartName = getChartsSelected(req.query);
-
-    const chart = await getChart(chartName, date);
-
-    const {
-      title1,
-      title2,
-      artist1,
-      artist2,
-      searchTerm1,
-      searchTerm2,
-    } = getPickSongs(chart, req.query);
-
-    let [vid1, vid2] = await Promise.all([
-      getSearchResult({
-        title: title1,
-        artist: artist1,
-        searchTerm: searchTerm1,
-      }),
-      getSearchResult({
-        title: title2,
-        artist: artist2,
-        searchTerm: searchTerm2,
-      }),
-    ]);
-
-    return res.json({ vid1, vid2 });
-  } catch (e) {
-    return res.json({ error: e });
-  }
-});
-
 app.get("/api/searchvids", async (req, res) => {
   try {
     const searchTerm = req.query.search.replace(/%/g, " ");
