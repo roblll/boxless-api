@@ -101,9 +101,19 @@ const getPickSongs = (chart, query) => {
   };
 };
 
+const getWeek = (date) => {
+  const d = new Date(`${date}T03:24:00`);
+  var theDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  var prevSunday = new Date(
+    theDate.setDate(theDate.getDate() - theDate.getDay())
+  );
+  return formatDate(prevSunday);
+};
+
 module.exports = {
   getRandDate,
   getChartsSelected,
   getSongSearch,
   getPickSongs,
+  getWeek,
 };

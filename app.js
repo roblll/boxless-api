@@ -18,6 +18,7 @@ const {
   getChartsSelected,
   getSongSearch,
   getPickSongs,
+  getWeek,
 } = require("./utils/utils");
 
 app.use(express.static(path.join(__dirname, "build")));
@@ -25,6 +26,8 @@ app.use(express.static(path.join(__dirname, "build")));
 app.get("/api/vid", async (req, res) => {
   try {
     const date = getRandDate(req.query);
+    const week = getWeek(date);
+    console.log(week);
 
     const chartName = getChartsSelected(req.query);
 
