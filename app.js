@@ -21,17 +21,31 @@ const {
   getWeek,
 } = require("./utils/utils");
 
+let chartsState = {};
+
 app.use(express.static(path.join(__dirname, "build")));
 
 app.get("/api/vid", async (req, res) => {
   try {
     const date = getRandDate(req.query);
     const week = getWeek(date);
-    console.log(week);
 
     const chartName = getChartsSelected(req.query);
 
-    const chart = await getChart(chartName, date);
+    let chart = null;
+
+    if (chartsState[week]) {
+      console.log("found");
+      chart = chartsState[week];
+    } else {
+      console.log("not found");
+      chart = await getChart(chartName, week);
+      if (chart.length > 0) {
+        chartsState[week] = chart;
+      }
+    }
+
+    console.log(Object.keys(chartsState).length);
 
     const songSearch = getSongSearch(chart, req.query);
 
