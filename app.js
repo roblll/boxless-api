@@ -10,6 +10,7 @@ const path = require("path");
 app.use(bodyParser.json());
 app.use(morgan("tiny"));
 app.use(cors());
+const db = require("./db");
 
 const { getSearchResult, getSearchVids } = require("./yts/yts");
 const { getChart } = require("./bbs/bbs");
@@ -69,6 +70,15 @@ app.get("/api/searchvids", async (req, res) => {
     return res.json({ searchResults });
   } catch (e) {
     return res.json({ error: e });
+  }
+});
+
+app.get("/api/dbtest", async (req, res) => {
+  try {
+    const results = await db.query("SELECT * FROM pop");
+    return res.json(results);
+  } catch (err) {
+    return next(err);
   }
 });
 
