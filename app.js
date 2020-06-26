@@ -75,10 +75,39 @@ app.get("/api/searchvids", async (req, res) => {
 
 app.get("/api/dbtest", async (req, res) => {
   try {
-    const results = await db.query("SELECT * FROM pop");
-    return res.json(results);
-  } catch (err) {
-    return next(err);
+    const date = getRandDate(req.query);
+    const week = getWeek(date);
+    const chartName = getChartsSelected(req.query);
+    console.log(chartName);
+
+    let chart = null;
+
+    const results = await db.query(`SELECT * FROM pop WHERE week=$1`, [week]);
+    if (results.rows.length > 0) {
+      chart = results.rows[0].data;
+    } else {
+      chart = await getChart(chartName, week);
+      if (chart.length > 0) {
+        const chartJSON = JSON.stringify(chart);
+        const test = await db.query(
+          `INSERT INTO pop(week, data) VALUES ($1, $2)`,
+          [week, chartJSON]
+        );
+      }
+    }
+
+    const songSearch = getSongSearch(chart, req.query);
+
+    const vid = await getSearchResult(songSearch);
+
+    if (vid) {
+      const { vidId, title, artist } = vid;
+      return res.json({ vidId, title, artist });
+    } else {
+      return res.json({});
+    }
+  } catch (e) {
+    return res.json({ error: e });
   }
 });
 
