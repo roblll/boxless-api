@@ -1,6 +1,7 @@
 const request = require("request");
 const cheerio = require("cheerio");
 const axios = require("axios");
+const puppeteer = require("puppeteer");
 
 const YOUTUBE_BASE_URL = "http://www.youtube.com";
 const YOUTUBE_SEARCH_URL = `${YOUTUBE_BASE_URL}/results?search_query=`;
@@ -12,14 +13,27 @@ async function getSearchResult(search) {
     const formattedSearchTerm = searchTerm.replace(/ /g, "+");
     const requestURL = `${YOUTUBE_SEARCH_URL}${formattedSearchTerm}`;
 
-    const response = await axios.get(requestURL);
-    const html = response.data;
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto(requestURL);
+    const content = await page.content();
+    const $ = cheerio.load(content);
 
-    const $ = cheerio.load(html);
     const vidIds = [];
-    $("div .yt-lockup").each(function (index, elem) {
-      vidIds[index] = elem.attribs["data-context-item-id"];
+
+    $("a").each(function (index, elem) {
+      if (
+        elem.attribs.class ===
+        "yt-simple-endpoint inline-block style-scope ytd-thumbnail"
+      ) {
+        if (elem.attribs.href) {
+          if (elem.attribs.href.length === 20) {
+            vidIds[index] = elem.attribs.href.slice(9);
+          }
+        }
+      }
     });
+
     let vidId = "";
 
     for (let i = 0; i < vidIds.length; i++) {
