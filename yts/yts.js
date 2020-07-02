@@ -28,11 +28,13 @@ async function getSearchResult(search) {
       ) {
         if (elem.attribs.href) {
           if (elem.attribs.href.length === 20) {
-            vidIds[index] = elem.attribs.href.slice(9);
+            vidIds.push(elem.attribs.href.slice(9));
           }
         }
       }
     });
+
+    browser.close();
 
     let vidId = "";
 
@@ -58,27 +60,47 @@ async function getSearchVids(searchTerm) {
     const formattedSearchTerm = searchTerm.replace(/ /g, "+");
     const requestURL = `${YOUTUBE_SEARCH_URL}${formattedSearchTerm}`;
 
-    const response = await axios.get(requestURL);
-    const html = response.data;
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto(requestURL);
+    const content = await page.content();
+    const $ = cheerio.load(content);
 
-    const $ = cheerio.load(html);
     const vidIds = [];
     const vidTitles = [];
     const vids = [];
-    $("div .yt-lockup").each(function (index, elem) {
-      vidIds[index] = elem.attribs["data-context-item-id"];
-    });
+
+    // $("div .yt-lockup").each(function (index, elem) {
+    //   vidIds[index] = elem.attribs["data-context-item-id"];
+    // });
+
     $("a").each(function (index, elem) {
       if (
         elem.attribs.class ===
-        "yt-uix-tile-link yt-ui-ellipsis yt-ui-ellipsis-2 yt-uix-sessionlink      spf-link "
+        "yt-simple-endpoint inline-block style-scope ytd-thumbnail"
       ) {
-        vidTitles.push(elem.attribs.title);
+        if (elem.attribs.href) {
+          if (elem.attribs.href.length === 20) {
+            vidIds.push(elem.attribs.href.slice(9));
+          }
+        }
       }
     });
+
+    // $("a").each(function (index, elem) {
+    //   if (
+    //     elem.attribs.class ===
+    //     "yt-uix-tile-link yt-ui-ellipsis yt-ui-ellipsis-2 yt-uix-sessionlink      spf-link "
+    //   ) {
+    //     vidTitles.push(elem.attribs.title);
+    //   }
+    // });
+
+    browser.close();
+
     for (i = 0; i < vidIds.length; i++) {
-      if (vidIds[i] && vidTitles[i]) {
-        vids.push({ vidId: vidIds[i], title: vidTitles[i] });
+      if (vidIds[i]) {
+        vids.push({ vidId: vidIds[i], title: vidIds[i].toString() });
       }
     }
     if (vids.length === 0) {
