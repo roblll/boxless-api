@@ -70,37 +70,25 @@ async function getSearchVids(searchTerm) {
     const vidTitles = [];
     const vids = [];
 
-    // $("div .yt-lockup").each(function (index, elem) {
-    //   vidIds[index] = elem.attribs["data-context-item-id"];
-    // });
-
     $("a").each(function (index, elem) {
       if (
         elem.attribs.class ===
-        "yt-simple-endpoint inline-block style-scope ytd-thumbnail"
+        "yt-simple-endpoint style-scope ytd-video-renderer"
       ) {
         if (elem.attribs.href) {
           if (elem.attribs.href.length === 20) {
             vidIds.push(elem.attribs.href.slice(9));
+            vidTitles.push(elem.attribs.title);
           }
         }
       }
     });
 
-    // $("a").each(function (index, elem) {
-    //   if (
-    //     elem.attribs.class ===
-    //     "yt-uix-tile-link yt-ui-ellipsis yt-ui-ellipsis-2 yt-uix-sessionlink      spf-link "
-    //   ) {
-    //     vidTitles.push(elem.attribs.title);
-    //   }
-    // });
-
     browser.close();
 
     for (i = 0; i < vidIds.length; i++) {
       if (vidIds[i]) {
-        vids.push({ vidId: vidIds[i], title: vidIds[i].toString() });
+        vids.push({ vidId: vidIds[i], title: vidTitles[i] });
       }
     }
     if (vids.length === 0) {
