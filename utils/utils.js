@@ -110,10 +110,26 @@ const getWeek = (date) => {
   return formatDate(prevSunday);
 };
 
+const getGenre = (chart) => {
+  const conversion = {
+    "hot-100": "pop",
+    "rap-song": "rap",
+    "latin-songs": "latin",
+    "alternative-songs": "alternative",
+    "dance-electronic-songs": "electronic",
+    "country-songs": "country",
+    "r-b-hip-hop-songs": "randb",
+    "rock-songs": "rock",
+    "dance-club-play-songs": "dance",
+  };
+  return conversion[chart];
+};
+
 module.exports = {
   getRandDate,
   getChartsSelected,
   getSongSearch,
   getPickSongs,
   getWeek,
+  getGenre,
 };

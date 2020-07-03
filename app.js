@@ -20,6 +20,7 @@ const {
   getSongSearch,
   getPickSongs,
   getWeek,
+  getGenre,
 } = require("./utils/utils");
 
 app.use(express.static(path.join(__dirname, "build")));
@@ -31,6 +32,8 @@ app.get("/api/vid", async (req, res) => {
     const chartName = getChartsSelected(req.query);
 
     let chart = null;
+
+    console.log(getGenre(chartName));
 
     const results = await db.query(`SELECT * FROM pop WHERE week=$1`, [week]);
     if (results.rows.length > 0) {
