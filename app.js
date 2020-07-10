@@ -14,6 +14,7 @@ const db = require("./db");
 
 const { getSearchResult, getSearchVids } = require("./yts/yts");
 const { getChart } = require("./bbs/bbs");
+
 const {
   getRandDate,
   getChartsSelected,
@@ -33,9 +34,12 @@ app.get("/api/vid", async (req, res) => {
 
     let chart = null;
 
-    console.log(getGenre(chartName));
+    const genre = getGenre(chartName);
 
-    const results = await db.query(`SELECT * FROM pop WHERE week=$1`, [week]);
+    const results = await db.query(`SELECT * FROM ${genre} WHERE week=$1`, [
+      week,
+    ]);
+
     if (results.rows.length > 0) {
       chart = results.rows[0].data;
     } else {
@@ -43,9 +47,10 @@ app.get("/api/vid", async (req, res) => {
       if (chart.length > 0) {
         const chartJSON = JSON.stringify(chart);
         const test = await db.query(
-          `INSERT INTO pop(week, data) VALUES ($1, $2)`,
+          `INSERT INTO ${genre}(week, data) VALUES ($1, $2)`,
           [week, chartJSON]
         );
+        console.log(test);
       }
     }
 
