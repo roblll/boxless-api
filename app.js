@@ -14,6 +14,7 @@ const db = require("./db");
 
 const { getSearchResult, getSearchVids } = require("./yts/yts");
 const { getChart } = require("./bbs/bbs");
+const { getRSong } = require("./rs/rs");
 
 const {
   getRandDate,
