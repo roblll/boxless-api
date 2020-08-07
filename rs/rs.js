@@ -3,6 +3,8 @@ const puppeteer = require("puppeteer");
 
 const REDDIT_BASE_URL = "http://www.reddit.com";
 
+const { getRandNum } = require("../utils/utils");
+
 async function getRVid(search) {
   try {
     const requestURL = `https://old.reddit.com/r/hiphopheads/`;
@@ -24,10 +26,11 @@ async function getRVid(search) {
       }
     });
 
+    const randomVidIndex = getRandNum(0, vids.length - 1);
+
     browser.close();
 
-    return { vids: vids };
-    // return { test: content };
+    return { vid: vids[randomVidIndex] };
   } catch (e) {
     return undefined;
   }

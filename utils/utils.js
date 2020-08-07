@@ -132,4 +132,5 @@ module.exports = {
   getPickSongs,
   getWeek,
   getGenre,
+  getRandNum,
 };

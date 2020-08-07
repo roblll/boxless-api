@@ -82,8 +82,9 @@ app.get("/api/searchvids", async (req, res) => {
 
 app.get("/api/test", async (req, res) => {
   try {
-    const vid = await getRVid("test");
-    const title = await getTitle("https://www.youtube.com/watch?v=dzSZtHdMDzk");
+    const { vid } = await getRVid("test");
+    console.log(vid);
+    const title = await getTitle(vid);
     return res.json({ vid, title });
   } catch (e) {
     return res.json({ error: e });
