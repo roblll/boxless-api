@@ -12,9 +12,9 @@ app.use(morgan("tiny"));
 app.use(cors());
 const db = require("./db");
 
-const { getSearchResult, getSearchVids } = require("./yts/yts");
+const { getSearchResult, getSearchVids, getTitle } = require("./yts/yts");
 const { getChart } = require("./bbs/bbs");
-const { getRSong } = require("./rs/rs");
+const { getRVid } = require("./rs/rs");
 
 const {
   getRandDate,
@@ -82,8 +82,9 @@ app.get("/api/searchvids", async (req, res) => {
 
 app.get("/api/test", async (req, res) => {
   try {
-    const test = await getRSong("test");
-    return res.json({ test });
+    const vid = await getRVid("test");
+    const title = await getTitle("https://www.youtube.com/watch?v=dzSZtHdMDzk");
+    return res.json({ vid, title });
   } catch (e) {
     return res.json({ error: e });
   }

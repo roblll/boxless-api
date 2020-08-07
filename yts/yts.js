@@ -101,7 +101,34 @@ async function getSearchVids(searchTerm) {
   }
 }
 
+async function getTitle(url) {
+  try {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto(url);
+    const content = await page.content();
+    const $ = cheerio.load(content);
+
+    let title = "";
+
+    $("title").each(function (index, elem) {
+      console.log(elem.children[0].data);
+      title = elem.children[0].data;
+    });
+
+    title = title.replace(" - YouTube", "");
+    console.log(title);
+
+    browser.close();
+
+    return { title };
+  } catch (e) {
+    return e;
+  }
+}
+
 module.exports = {
   getSearchResult,
   getSearchVids,
+  getTitle,
 };

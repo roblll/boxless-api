@@ -3,7 +3,7 @@ const puppeteer = require("puppeteer");
 
 const REDDIT_BASE_URL = "http://www.reddit.com";
 
-async function getRSong(search) {
+async function getRVid(search) {
   try {
     const requestURL = `https://old.reddit.com/r/hiphopheads/`;
 
@@ -24,6 +24,8 @@ async function getRSong(search) {
       }
     });
 
+    browser.close();
+
     return { vids: vids };
     // return { test: content };
   } catch (e) {
@@ -32,5 +34,5 @@ async function getRSong(search) {
 }
 
 module.exports = {
-  getRSong,
+  getRVid,
 };
