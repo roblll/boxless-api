@@ -80,6 +80,15 @@ app.get("/api/searchvids", async (req, res) => {
   }
 });
 
+app.get("/api/test", async (req, res) => {
+  try {
+    const test = await getRSong("test");
+    return res.json({ test });
+  } catch (e) {
+    return res.json({ error: e });
+  }
+});
+
 app.get("*", (req, res, next) => {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
