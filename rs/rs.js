@@ -25,9 +25,9 @@ const getVidId = (url) => {
   }
 };
 
-async function getRVid(search) {
+async function getRVid(genre) {
   try {
-    const requestURL = `https://old.reddit.com/r/hiphopheads/`;
+    const requestURL = `https://old.reddit.com/r/hiphopheads/new`;
 
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
@@ -36,8 +36,15 @@ async function getRVid(search) {
     const $ = cheerio.load(content);
 
     const vids = [];
+    let nextPage = "";
 
     $("a").each(function (index, elem) {
+      if (elem.attribs.rel === "nofollow next") {
+        nextPage = elem.attribs.href.replace(
+          "https://old.reddit.com/r/hiphopheads/new/",
+          ""
+        );
+      }
       if (
         elem.attribs.class === "title may-blank outbound" &&
         elem.attribs.href.indexOf("youtu") !== -1
@@ -56,7 +63,7 @@ async function getRVid(search) {
 
     browser.close();
 
-    return { vidId: vidIds[randomVidIndex] };
+    return { vidId: vidIds[randomVidIndex], nextPage };
   } catch (e) {
     return undefined;
   }

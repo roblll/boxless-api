@@ -38,7 +38,7 @@ app.get("/api/vid", async (req, res) => {
     const genre = getGenre(chartName);
 
     if (genre === "hiphop") {
-      const { vidId } = await getRVid(genre);
+      const { vidId, nextPage } = await getRVid(genre);
       const { title } = await getTitle(vidId);
       return res.json({ vidId, title });
     } else {
@@ -88,8 +88,8 @@ app.get("/api/searchvids", async (req, res) => {
 
 app.get("/api/test", async (req, res) => {
   try {
-    const { vidId } = await getRVid("test");
-    console.log(vidId);
+    const { vidId, nextPage } = await getRVid("test");
+    console.log(nextPage);
     const title = await getTitle(vidId);
     return res.json({ vidId, title });
   } catch (e) {
