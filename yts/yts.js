@@ -101,11 +101,11 @@ async function getSearchVids(searchTerm) {
   }
 }
 
-async function getTitle(url) {
+async function getTitle(vidId) {
   try {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
-    await page.goto(url);
+    await page.goto(`https://www.youtube.com/watch?v=${vidId}`);
     const content = await page.content();
     const $ = cheerio.load(content);
 

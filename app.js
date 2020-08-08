@@ -82,10 +82,10 @@ app.get("/api/searchvids", async (req, res) => {
 
 app.get("/api/test", async (req, res) => {
   try {
-    const { vid } = await getRVid("test");
-    console.log(vid);
-    const title = await getTitle(vid);
-    return res.json({ vid, title });
+    const { vidId } = await getRVid("test");
+    console.log(vidId);
+    const title = await getTitle(vidId);
+    return res.json({ vidId, title });
   } catch (e) {
     return res.json({ error: e });
   }

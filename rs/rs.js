@@ -5,6 +5,26 @@ const REDDIT_BASE_URL = "http://www.reddit.com";
 
 const { getRandNum } = require("../utils/utils");
 
+const getVidId = (url) => {
+  if (url.indexOf("youtube") !== -1) {
+    let trimmed = url.slice(32);
+    if (trimmed.indexOf("&") === -1) {
+      return trimmed;
+    } else {
+      return trimmed.slice(0, trimmed.indexOf("&"));
+    }
+  } else if (url.indexOf("youtu.be")) {
+    let trimmed = url.slice(17);
+    if (trimmed.indexOf("&") === -1) {
+      return trimmed;
+    } else {
+      return trimmed.slice(0, trimmed.indexOf("&"));
+    }
+  } else {
+    return null;
+  }
+};
+
 async function getRVid(search) {
   try {
     const requestURL = `https://old.reddit.com/r/hiphopheads/`;
@@ -26,11 +46,17 @@ async function getRVid(search) {
       }
     });
 
+    vidIds = [];
+    vids.forEach((element) => {
+      const id = getVidId(element);
+      if (id) vidIds.push(id);
+    });
+
     const randomVidIndex = getRandNum(0, vids.length - 1);
 
     browser.close();
 
-    return { vid: vids[randomVidIndex] };
+    return { vidId: vidIds[randomVidIndex] };
   } catch (e) {
     return undefined;
   }
