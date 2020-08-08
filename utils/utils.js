@@ -29,6 +29,7 @@ const getChartsSelected = (query) => {
     randb,
     rock,
     dance,
+    hiphop,
   } = query;
   const chartsSelected = {
     "hot-100": pop === "true",
@@ -40,6 +41,7 @@ const getChartsSelected = (query) => {
     "r-and-b-songs": randb === "true",
     "rock-songs": rock === "true",
     "dance-club-play-songs": dance === "true",
+    hiphop: hiphop === "true",
   };
   let charts = [];
   for (const genre in chartsSelected) {
@@ -121,6 +123,7 @@ const getGenre = (chart) => {
     "r-and-b-songs": "randb",
     "rock-songs": "rock",
     "dance-club-play-songs": "dance",
+    hiphop: "hiphop",
   };
   return conversion[chart];
 };

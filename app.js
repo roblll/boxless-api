@@ -37,33 +37,39 @@ app.get("/api/vid", async (req, res) => {
 
     const genre = getGenre(chartName);
 
-    const results = await db.query(`SELECT * FROM ${genre} WHERE week=$1`, [
-      week,
-    ]);
-
-    if (results.rows.length > 0) {
-      chart = results.rows[0].data;
+    if (genre === "hiphop") {
+      const { vidId } = await getRVid(genre);
+      const { title } = await getTitle(vidId);
+      return res.json({ vidId, title });
     } else {
-      chart = await getChart(chartName, week);
-      if (chart.length > 0) {
-        const chartJSON = JSON.stringify(chart);
-        const test = await db.query(
-          `INSERT INTO ${genre}(week, data) VALUES ($1, $2)`,
-          [week, chartJSON]
-        );
-        console.log(test);
+      const results = await db.query(`SELECT * FROM ${genre} WHERE week=$1`, [
+        week,
+      ]);
+
+      if (results.rows.length > 0) {
+        chart = results.rows[0].data;
+      } else {
+        chart = await getChart(chartName, week);
+        if (chart.length > 0) {
+          const chartJSON = JSON.stringify(chart);
+          const test = await db.query(
+            `INSERT INTO ${genre}(week, data) VALUES ($1, $2)`,
+            [week, chartJSON]
+          );
+          console.log(test);
+        }
       }
-    }
 
-    const songSearch = getSongSearch(chart, req.query);
+      const songSearch = getSongSearch(chart, req.query);
 
-    const vid = await getSearchResult(songSearch);
+      const vid = await getSearchResult(songSearch);
 
-    if (vid) {
-      const { vidId, title, artist } = vid;
-      return res.json({ vidId, title, artist });
-    } else {
-      return res.json({});
+      if (vid) {
+        const { vidId, title, artist } = vid;
+        return res.json({ vidId, title, artist });
+      } else {
+        return res.json({});
+      }
     }
   } catch (e) {
     return res.json({ error: e });
