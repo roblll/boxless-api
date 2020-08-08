@@ -40,7 +40,7 @@ app.get("/api/vid", async (req, res) => {
     if (genre === "hiphop") {
       const { vidId, nextPage } = await getRVid(genre);
       const { title } = await getTitle(vidId);
-      return res.json({ vidId, title });
+      return res.json({ vidId, title, hiphopPage: nextPage });
     } else {
       const results = await db.query(`SELECT * FROM ${genre} WHERE week=$1`, [
         week,
