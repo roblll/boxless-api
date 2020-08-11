@@ -3,7 +3,7 @@ const puppeteer = require("puppeteer");
 
 const REDDIT_BASE_URL = "http://www.reddit.com";
 
-const { getRandNum } = require("../utils/utils");
+const { getRandNum, getUrlParams } = require("../utils/utils");
 
 const getVidId = (url) => {
   if (url.indexOf("youtube") !== -1) {
@@ -25,9 +25,12 @@ const getVidId = (url) => {
   }
 };
 
-async function getRVid(genre) {
+async function getRVid(genre, pageId, test) {
   try {
-    const requestURL = `https://old.reddit.com/r/hiphopheads/new`;
+    let requestURL = `https://old.reddit.com/r/hiphopheads/new`;
+    // if (pageId !== "") {
+    //   requestURL = `${requestURL}?count=25&after=${pageId}`;
+    // }
 
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
@@ -36,14 +39,19 @@ async function getRVid(genre) {
     const $ = cheerio.load(content);
 
     const vids = [];
-    let nextPage = "";
+    let hiphopAfter = "";
+    let hiphopCount = "";
 
     $("a").each(function (index, elem) {
       if (elem.attribs.rel === "nofollow next") {
-        nextPage = elem.attribs.href.replace(
-          "https://old.reddit.com/r/hiphopheads/new/",
-          ""
+        const { count, after } = getUrlParams(
+          elem.attribs.href.replace(
+            "https://old.reddit.com/r/hiphopheads/new/",
+            ""
+          )
         );
+        hiphopAfter = after;
+        hiphopCount = count;
       }
       if (
         elem.attribs.class === "title may-blank outbound" &&
@@ -63,8 +71,9 @@ async function getRVid(genre) {
 
     browser.close();
 
-    return { vidId: vidIds[randomVidIndex], nextPage };
+    return { vidId: vidIds[randomVidIndex], hiphopAfter, hiphopCount };
   } catch (e) {
+    console.log(e);
     return undefined;
   }
 }
