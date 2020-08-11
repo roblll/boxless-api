@@ -25,12 +25,13 @@ const getVidId = (url) => {
   }
 };
 
-async function getRVid(genre, pageId, test) {
+async function getRVid(genre, a, c) {
   try {
     let requestURL = `https://old.reddit.com/r/hiphopheads/new`;
-    // if (pageId !== "") {
-    //   requestURL = `${requestURL}?count=25&after=${pageId}`;
-    // }
+    if (a) {
+      requestURL = `${requestURL}?count=${c}&after=${a}`;
+    }
+    console.log(requestURL);
 
     const browser = await puppeteer.launch();
     const page = await browser.newPage();

@@ -40,7 +40,7 @@ app.get("/api/vid", async (req, res) => {
     if (genre === "hiphop") {
       const { vidId, hiphopAfter, hiphopCount } = await getRVid(
         genre,
-        req.query.hiphopPage,
+        req.query.hiphopAfter,
         req.query.hiphopCount
       );
       const { title } = await getTitle(vidId);
