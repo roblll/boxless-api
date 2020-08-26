@@ -73,6 +73,98 @@ async function getRVid(genre, a, c) {
     browser.close();
 
     return { vidId: vidIds[randomVidIndex], hiphopAfter, hiphopCount };
+
+    // HERE!!!!!!!!!!
+
+    // let requestURL = `https://old.reddit.com/r/house/new`;
+    // if (a) {
+    //   requestURL = `${requestURL}?count=${c}&after=${a}`;
+    // }
+    // console.log(requestURL);
+
+    // const browser = await puppeteer.launch();
+    // const page = await browser.newPage();
+    // await page.goto(requestURL);
+    // const content = await page.content();
+    // const $ = cheerio.load(content);
+
+    // const vids = [];
+    // let hiphopAfter = "";
+    // let hiphopCount = "";
+
+    // $("a").each(function (index, elem) {
+    //   if (elem.attribs.rel === "nofollow next") {
+    //     const { count, after } = getUrlParams(elem.attribs.href.slice(35));
+    //     console.log(elem.attribs.href.slice(36));
+    //     console.log(getUrlParams(elem.attribs.href.slice(35)));
+    //     hiphopAfter = after;
+    //     hiphopCount = count;
+    //   }
+    //   if (
+    //     elem.attribs.class === "title may-blank outbound" &&
+    //     elem.attribs.href.indexOf("youtu") !== -1
+    //   ) {
+    //     vids.push(elem.attribs.href);
+    //   }
+    // });
+
+    // vidIds = [];
+    // vids.forEach((element) => {
+    //   const id = getVidId(element);
+    //   if (id) vidIds.push(id);
+    // });
+
+    // const randomVidIndex = getRandNum(0, vids.length - 1);
+
+    // browser.close();
+
+    // return { vidId: vidIds[randomVidIndex], hiphopAfter, hiphopCount };
+
+    // HERE !!!!!!!!
+
+    // let requestURL = `https://old.reddit.com/r/trance/new`;
+    // if (a) {
+    //   requestURL = `${requestURL}?count=${c}&after=${a}`;
+    // }
+    // console.log(requestURL);
+
+    // const browser = await puppeteer.launch();
+    // const page = await browser.newPage();
+    // await page.goto(requestURL);
+    // const content = await page.content();
+    // const $ = cheerio.load(content);
+
+    // const vids = [];
+    // let hiphopAfter = "";
+    // let hiphopCount = "";
+
+    // $("a").each(function (index, elem) {
+    //   if (elem.attribs.rel === "nofollow next") {
+    //     const { count, after } = getUrlParams(elem.attribs.href.slice(36));
+    //     console.log(elem.attribs.href.slice(36));
+    //     console.log(getUrlParams(elem.attribs.href.slice(35)));
+    //     hiphopAfter = after;
+    //     hiphopCount = count;
+    //   }
+    //   if (
+    //     elem.attribs.class === "title may-blank outbound" &&
+    //     elem.attribs.href.indexOf("youtu") !== -1
+    //   ) {
+    //     vids.push(elem.attribs.href);
+    //   }
+    // });
+
+    // vidIds = [];
+    // vids.forEach((element) => {
+    //   const id = getVidId(element);
+    //   if (id) vidIds.push(id);
+    // });
+
+    // const randomVidIndex = getRandNum(0, vids.length - 1);
+
+    // browser.close();
+
+    // return { vidId: vidIds[randomVidIndex], hiphopAfter, hiphopCount };
   } catch (e) {
     console.log(e);
     return undefined;

@@ -37,14 +37,35 @@ app.get("/api/vid", async (req, res) => {
 
     const genre = getGenre(chartName);
 
-    if (genre === "hiphop") {
-      const { vidId, hiphopAfter, hiphopCount } = await getRVid(
+    if (genre === "hiphop" || genre === "house" || genre === "trance") {
+      const {
+        vidId,
+        hiphopAfter,
+        hiphopCount,
+        houseAfter,
+        houseCount,
+        tranceAfter,
+        tranceCount,
+      } = await getRVid(
         genre,
         req.query.hiphopAfter,
-        req.query.hiphopCount
+        req.query.hiphopCount,
+        req.query.houseAfter,
+        req.query.houseCount,
+        req.query.tranceAfter,
+        req.query.tranceCount
       );
       const { title } = await getTitle(vidId);
-      return res.json({ vidId, title, hiphopAfter, hiphopCount });
+      return res.json({
+        vidId,
+        title,
+        hiphopAfter,
+        hiphopCount,
+        houseAfter,
+        houseCount,
+        tranceAfter,
+        tranceCount,
+      });
     } else {
       const results = await db.query(`SELECT * FROM ${genre} WHERE week=$1`, [
         week,
