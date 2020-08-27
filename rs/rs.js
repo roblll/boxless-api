@@ -25,13 +25,39 @@ const getVidId = (url) => {
   }
 };
 
-async function getRVid(genre, a, c) {
+async function getRVid(
+  genre,
+  hiphopAfter,
+  hiphopCount,
+  houseAfter,
+  houseCount,
+  tranceAfter,
+  tranceCount
+) {
   try {
-    let requestURL = `https://old.reddit.com/r/hiphopheads/new`;
-    if (a) {
-      requestURL = `${requestURL}?count=${c}&after=${a}`;
+    let srName = "";
+    let count = "";
+    let after = "";
+    if (genre === "hiphop") {
+      srName = "hiphopheads";
+      count = hiphopCount;
+      after = hiphopAfter;
     }
-    console.log(requestURL);
+    if (genre === "house") {
+      srName = "house";
+      count = houseCount;
+      after = houseAfter;
+    }
+    if (genre === "trance") {
+      srName = "trance";
+      count = tranceCount;
+      after = tranceAfter;
+    }
+
+    let requestURL = `https://old.reddit.com/r/${srName}/new`;
+    if (after) {
+      requestURL = `${requestURL}?count=${count}&after=${after}`;
+    }
 
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
@@ -40,19 +66,31 @@ async function getRVid(genre, a, c) {
     const $ = cheerio.load(content);
 
     const vids = [];
-    let hiphopAfter = "";
-    let hiphopCount = "";
+    let newAfter = "";
+    let newCount = "";
 
     $("a").each(function (index, elem) {
       if (elem.attribs.rel === "nofollow next") {
-        const { count, after } = getUrlParams(
-          elem.attribs.href.replace(
-            "https://old.reddit.com/r/hiphopheads/new/",
-            ""
-          )
-        );
-        hiphopAfter = after;
-        hiphopCount = count;
+        if (genre === "hiphop") {
+          const { count, after } = getUrlParams(
+            elem.attribs.href.replace(
+              `https://old.reddit.com/r/${srName}/new/`,
+              ""
+            )
+          );
+          newAfter = after;
+          newCount = count;
+        }
+        if (genre === "house") {
+          const { count, after } = getUrlParams(elem.attribs.href.slice(35));
+          newAfter = after;
+          newCount = count;
+        }
+        if (genre === "trance") {
+          const { count, after } = getUrlParams(elem.attribs.href.slice(36));
+          newAfter = after;
+          newCount = count;
+        }
       }
       if (
         elem.attribs.class === "title may-blank outbound" &&
@@ -70,9 +108,82 @@ async function getRVid(genre, a, c) {
 
     const randomVidIndex = getRandNum(0, vids.length - 1);
 
+    console.log("after", newAfter);
+    console.log("count", newCount);
+
+    if (genre === "hiphop") {
+      hiphopAfter = newAfter;
+      hiphopCount = newCount;
+    }
+    if (genre === "house") {
+      houseAfter = newAfter;
+      houseCount = newCount;
+    }
+    if (genre === "trance") {
+      tranceAfter = newAfter;
+      tranceCount = newCount;
+    }
+
     browser.close();
 
-    return { vidId: vidIds[randomVidIndex], hiphopAfter, hiphopCount };
+    return {
+      vidId: vidIds[randomVidIndex],
+      hiphopAfter,
+      hiphopCount,
+      houseAfter,
+      houseCount,
+      tranceAfter,
+      tranceCount,
+    };
+
+    // HERE!!!!!
+
+    // let requestURL = `https://old.reddit.com/r/hiphopheads/new`;
+    // if (a) {
+    //   requestURL = `${requestURL}?count=${c}&after=${a}`;
+    // }
+    // console.log(requestURL);
+
+    // const browser = await puppeteer.launch();
+    // const page = await browser.newPage();
+    // await page.goto(requestURL);
+    // const content = await page.content();
+    // const $ = cheerio.load(content);
+
+    // const vids = [];
+    // let hiphopAfter = "";
+    // let hiphopCount = "";
+
+    // $("a").each(function (index, elem) {
+    //   if (elem.attribs.rel === "nofollow next") {
+    //     const { count, after } = getUrlParams(
+    //       elem.attribs.href.replace(
+    //         "https://old.reddit.com/r/hiphopheads/new/",
+    //         ""
+    //       )
+    //     );
+    //     hiphopAfter = after;
+    //     hiphopCount = count;
+    //   }
+    //   if (
+    //     elem.attribs.class === "title may-blank outbound" &&
+    //     elem.attribs.href.indexOf("youtu") !== -1
+    //   ) {
+    //     vids.push(elem.attribs.href);
+    //   }
+    // });
+
+    // vidIds = [];
+    // vids.forEach((element) => {
+    //   const id = getVidId(element);
+    //   if (id) vidIds.push(id);
+    // });
+
+    // const randomVidIndex = getRandNum(0, vids.length - 1);
+
+    // browser.close();
+
+    // return { vidId: vidIds[randomVidIndex], hiphopAfter, hiphopCount };
 
     // HERE!!!!!!!!!!
 
