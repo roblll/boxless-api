@@ -112,16 +112,31 @@ async function getRVid(
     console.log("count", newCount);
 
     if (genre === "hiphop") {
-      hiphopAfter = newAfter;
-      hiphopCount = newCount;
+      if (newAfter && newCount) {
+        hiphopAfter = newAfter;
+        hiphopCount = newCount;
+      } else {
+        hiphopAfter = after;
+        hiphopCount = count;
+      }
     }
     if (genre === "house") {
-      houseAfter = newAfter;
-      houseCount = newCount;
+      if (newAfter && newCount) {
+        houseAfter = newAfter;
+        houseCount = newCount;
+      } else {
+        houseAfter = after;
+        houseCount = count;
+      }
     }
     if (genre === "trance") {
-      tranceAfter = newAfter;
-      tranceCount = newCount;
+      if (newAfter && newCount) {
+        tranceAfter = newAfter;
+        tranceCount = newCount;
+      } else {
+        tranceAfter = after;
+        tranceCount = count;
+      }
     }
 
     browser.close();
