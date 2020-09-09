@@ -12,6 +12,11 @@ app.use(morgan("tiny"));
 app.use(cors());
 const db = require("./db");
 
+const users = {
+  7734805065: "rl",
+  7734804488: "al",
+};
+
 const { getSearchResult, getSearchVids, getTitle } = require("./yts/yts");
 const { getChart } = require("./bbs/bbs");
 const { getRVid } = require("./rs/rs");
@@ -111,14 +116,16 @@ app.get("/api/searchvids", async (req, res) => {
   }
 });
 
-app.get("/api/test", async (req, res) => {
+app.post("/api/test", async (req, res) => {
   try {
-    const { vidId, nextPage } = await getRVid("test");
-    console.log(nextPage);
-    const title = await getTitle(vidId);
-    return res.json({ vidId, title });
+    const { initials, phone } = req.body;
+    if (users[phone] === initials) {
+      return res.json({ test: "success" });
+    } else {
+      return res.json({ test: "fail" });
+    }
   } catch (e) {
-    return res.json({ error: e });
+    return res.json(e);
   }
 });
 
