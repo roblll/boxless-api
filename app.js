@@ -11,11 +11,13 @@ app.use(bodyParser.json());
 app.use(morgan("tiny"));
 app.use(cors());
 const db = require("./db");
+const jwt = require("jsonwebtoken");
 
 const users = {
   7734805065: "rl",
   7734804488: "al",
 };
+const SECRET = "NEVER EVER MAKE THIS PUBLIC IN PRODUCTION!";
 
 const { getSearchResult, getSearchVids, getTitle } = require("./yts/yts");
 const { getChart } = require("./bbs/bbs");
@@ -119,10 +121,15 @@ app.get("/api/searchvids", async (req, res) => {
 app.post("/api/test", async (req, res) => {
   try {
     const { initials, phone } = req.body;
+    console.log(initials, phone);
     if (users[phone] === initials) {
-      return res.json({ test: "success" });
+      const token = jwt.sign({ name: initials }, SECRET, {
+        expiresIn: 60 * 60 * 24,
+      });
+      console.log(token);
+      return res.json({ token });
     } else {
-      return res.json({ test: "fail" });
+      return res.json({});
     }
   } catch (e) {
     return res.json(e);
