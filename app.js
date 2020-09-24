@@ -34,7 +34,17 @@ const {
 
 app.use(express.static(path.join(__dirname, "build")));
 
-app.get("/api/vid", async (req, res) => {
+function ensureLoggedIn(req, res, next) {
+  try {
+    const authHeaderValue = req.headers.authorization;
+    const token = jwt.verify(authHeaderValue, SECRET);
+    return next();
+  } catch (e) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+}
+
+app.get("/api/vid", ensureLoggedIn, async (req, res) => {
   try {
     const date = getRandDate(req.query);
     const week = getWeek(date);
