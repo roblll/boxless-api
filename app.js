@@ -128,7 +128,7 @@ app.get("/api/searchvids", async (req, res) => {
   }
 });
 
-app.post("/api/test", async (req, res) => {
+app.post("/api/login", async (req, res) => {
   try {
     const { initials, phone } = req.body;
     console.log(initials, phone);
