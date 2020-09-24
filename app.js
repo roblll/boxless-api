@@ -118,7 +118,7 @@ app.get("/api/vid", ensureLoggedIn, async (req, res) => {
   }
 });
 
-app.get("/api/searchvids", async (req, res) => {
+app.get("/api/searchvids", ensureLoggedIn, async (req, res) => {
   try {
     const searchTerm = req.query.search.replace(/%/g, " ");
     const searchResults = await getSearchVids(searchTerm);
