@@ -107,8 +107,8 @@ app.get("/api/vid", ensureLoggedIn, async (req, res) => {
       const vid = await getSearchResult(songSearch);
 
       if (vid) {
-        const { vidId, title, artist } = vid;
-        return res.json({ vidId, title, artist });
+        const { vidId, vidLength, title, artist } = vid;
+        return res.json({ vidId, vidLength, title, artist });
       } else {
         return res.json({});
       }
