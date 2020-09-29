@@ -17,18 +17,48 @@ async function getSearchResult(search) {
     const page = await browser.newPage();
     await page.goto(requestURL);
     const content = await page.content();
+
     const $ = cheerio.load(content);
 
     const vidIds = [];
+    const vidLengths = [];
 
     $("a").each(function (index, elem) {
       if (
         elem.attribs.class ===
-        "yt-simple-endpoint inline-block style-scope ytd-thumbnail"
+        "yt-simple-endpoint style-scope ytd-video-renderer"
       ) {
         if (elem.attribs.href) {
           if (elem.attribs.href.length === 20) {
             vidIds.push(elem.attribs.href.slice(9));
+
+            const label = elem.children[0].parent.attribs["aria-label"];
+
+            let seconds = 0;
+            const indexOfSeconds = label.lastIndexOf("second") - 2;
+            if (indexOfSeconds > 0) {
+              seconds = parseInt(
+                `${label[indexOfSeconds - 1]}${label[indexOfSeconds]}`
+              );
+            }
+
+            let minutes = 0;
+            const indexOfMinutes = label.lastIndexOf("minute") - 2;
+            if (indexOfMinutes > 0) {
+              minutes = parseInt(
+                `${label[indexOfMinutes - 1]}${label[indexOfMinutes]}`
+              );
+            }
+
+            let hours = 0;
+            const indexOfHours = label.lastIndexOf("hour") - 2;
+            if (indexOfHours > 0) {
+              hours = parseInt(
+                `${label[indexOfHours - 1]}${label[indexOfHours]}`
+              );
+            }
+
+            vidLengths.push(hours * 60 * 60 + minutes * 60 + seconds);
           }
         }
       }
@@ -37,18 +67,20 @@ async function getSearchResult(search) {
     browser.close();
 
     let vidId = "";
+    let vidLength = "";
 
     for (let i = 0; i < vidIds.length; i++) {
-      if (vidIds[i]) {
+      if (vidIds[i] && vidLengths[i] !== 0) {
         vidId = vidIds[i];
+        vidLength = vidLengths[i];
         break;
       }
     }
 
-    if (vidId === "") {
+    if (vidId === "" || vidLength === "") {
       return undefined;
     } else {
-      return { vidId, title, artist };
+      return { vidId, vidLength, title, artist };
     }
   } catch (e) {
     return undefined;
