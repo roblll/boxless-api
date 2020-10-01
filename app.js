@@ -82,6 +82,7 @@ app.get("/api/vid", ensureLoggedIn, async (req, res) => {
         houseCount,
         tranceAfter,
         tranceCount,
+        genre,
       });
     } else {
       const results = await db.query(`SELECT * FROM ${genre} WHERE week=$1`, [
