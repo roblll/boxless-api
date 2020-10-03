@@ -91,6 +91,7 @@ async function getSearchResult(search) {
     }
   } catch (e) {
     console.log("error");
+    console.log(e);
     return undefined;
   }
 }
