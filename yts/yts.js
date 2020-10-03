@@ -95,7 +95,9 @@ async function getSearchVids(searchTerm) {
     const formattedSearchTerm = searchTerm.replace(/ /g, "+");
     const requestURL = `${YOUTUBE_SEARCH_URL}${formattedSearchTerm}`;
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
     const page = await browser.newPage();
     await page.goto(requestURL);
     const content = await page.content();
@@ -138,7 +140,9 @@ async function getSearchVids(searchTerm) {
 
 async function getTitle(vidId) {
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
     const page = await browser.newPage();
     await page.goto(`https://www.youtube.com/watch?v=${vidId}`);
     const content = await page.content();
@@ -165,7 +169,9 @@ async function getTitle(vidId) {
 async function getTitleAndLength(vidId) {
   console.log(vidId);
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
     const page = await browser.newPage();
     await page.goto(`https://www.youtube.com/watch?v=${vidId}`);
     const content = await page.content();
