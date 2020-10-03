@@ -13,16 +13,12 @@ async function getSearchResult(search) {
     const formattedSearchTerm = searchTerm.replace(/ /g, "+");
     const requestURL = `${YOUTUBE_SEARCH_URL}${formattedSearchTerm}`;
 
-    console.log(requestURL);
-
     const browser = await puppeteer.launch({
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
     const page = await browser.newPage();
     await page.goto(requestURL);
     const content = await page.content();
-
-    console.log(content);
 
     const $ = cheerio.load(content);
 
@@ -75,9 +71,6 @@ async function getSearchResult(search) {
     let vidId = "";
     let vidLength = "";
 
-    console.log(vidIds);
-    console.log(vidLengths);
-
     for (let i = 0; i < vidIds.length; i++) {
       if (vidIds[i] && vidLengths[i] !== 0) {
         vidId = vidIds[i];
@@ -92,7 +85,6 @@ async function getSearchResult(search) {
       return { vidId, vidLength, title, artist };
     }
   } catch (e) {
-    console.log("errors");
     console.log(e);
     return undefined;
   }
