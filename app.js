@@ -59,8 +59,6 @@ app.get("/api/test", async (req, res) => {
 
     const genre = getGenre(chartName);
 
-    console.log("a");
-
     if (genre === "hiphop" || genre === "house" || genre === "trance") {
       const {
         vidId,
@@ -92,11 +90,9 @@ app.get("/api/test", async (req, res) => {
         genre,
       });
     } else {
-      console.log("b");
       const results = await db.query(`SELECT * FROM ${genre} WHERE week=$1`, [
         week,
       ]);
-      console.log("c");
       if (results.rows.length > 0) {
         chart = results.rows[0].data;
       } else {
@@ -110,17 +106,12 @@ app.get("/api/test", async (req, res) => {
           console.log(test);
         }
       }
-      console.log("d");
       const songSearch = getSongSearch(chart, req.query);
-      console.log("e");
       const vid = await getSearchResult(songSearch);
-      console.log("f");
       if (vid) {
-        console.log("g");
         const { vidId, vidLength, title, artist } = vid;
         return res.json({ vidId, vidLength, title, artist });
       } else {
-        console.log("h");
         return res.json({});
       }
     }
