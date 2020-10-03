@@ -19,7 +19,12 @@ const users = {
 };
 const SECRET = "NEVER EVER MAKE THIS PUBLIC IN PRODUCTION!";
 
-const { getSearchResult, getSearchVids, getTitle } = require("./yts/yts");
+const {
+  getSearchResult,
+  getSearchVids,
+  getTitle,
+  getTitleAndLength,
+} = require("./yts/yts");
 const { getChart } = require("./bbs/bbs");
 const { getRVid } = require("./rs/rs");
 
@@ -43,6 +48,11 @@ function ensureLoggedIn(req, res, next) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 }
+
+app.get("/api/test", async (req, res) => {
+  const title = await getTitleAndLength("loOWKm8GW6A");
+  return res.json({ title });
+});
 
 app.get("/api/vid", ensureLoggedIn, async (req, res) => {
   try {

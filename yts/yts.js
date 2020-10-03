@@ -159,8 +159,36 @@ async function getTitle(vidId) {
   }
 }
 
+async function getTitleAndLength(vidId) {
+  console.log(vidId);
+  try {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto(`https://www.youtube.com/watch?v=${vidId}`);
+    const content = await page.content();
+    const $ = cheerio.load(content);
+
+    let title = "";
+
+    $("title").each(function (index, elem) {
+      console.log(elem.children[0].data);
+      title = elem.children[0].data;
+    });
+
+    title = title.replace(" - YouTube", "");
+    console.log(title);
+
+    browser.close();
+
+    return { title };
+  } catch (e) {
+    return e;
+  }
+}
+
 module.exports = {
   getSearchResult,
   getSearchVids,
   getTitle,
+  getTitleAndLength,
 };
