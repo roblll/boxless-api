@@ -50,8 +50,9 @@ function ensureLoggedIn(req, res, next) {
 }
 
 app.get("/api/test", async (req, res) => {
-  const title = await getTitleAndLength("loOWKm8GW6A");
-  return res.json({ title });
+  // const title = await getTitleAndLength("loOWKm8GW6A");
+  // return res.json({ title });
+  return res.json({ test: "test" });
 });
 
 app.get("/api/vid", ensureLoggedIn, async (req, res) => {
