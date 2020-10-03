@@ -50,9 +50,84 @@ function ensureLoggedIn(req, res, next) {
 }
 
 app.get("/api/test", async (req, res) => {
-  // const title = await getTitleAndLength("loOWKm8GW6A");
-  // return res.json({ title });
-  return res.json({ test: "test" });
+  try {
+    const date = getRandDate(req.query);
+    const week = getWeek(date);
+    const chartName = getChartsSelected(req.query);
+
+    let chart = null;
+
+    const genre = getGenre(chartName);
+
+    console.log("a");
+
+    if (genre === "hiphop" || genre === "house" || genre === "trance") {
+      const {
+        vidId,
+        hiphopAfter,
+        hiphopCount,
+        houseAfter,
+        houseCount,
+        tranceAfter,
+        tranceCount,
+      } = await getRVid(
+        genre,
+        req.query.hiphopAfter,
+        req.query.hiphopCount,
+        req.query.houseAfter,
+        req.query.houseCount,
+        req.query.tranceAfter,
+        req.query.tranceCount
+      );
+      const { title } = await getTitle(vidId);
+      return res.json({
+        vidId,
+        title,
+        hiphopAfter,
+        hiphopCount,
+        houseAfter,
+        houseCount,
+        tranceAfter,
+        tranceCount,
+        genre,
+      });
+    } else {
+      console.log("b");
+      const results = await db.query(`SELECT * FROM ${genre} WHERE week=$1`, [
+        week,
+      ]);
+      console.log("c");
+      if (results.rows.length > 0) {
+        chart = results.rows[0].data;
+      } else {
+        chart = await getChart(chartName, week);
+        if (chart.length > 0) {
+          const chartJSON = JSON.stringify(chart);
+          const test = await db.query(
+            `INSERT INTO ${genre}(week, data) VALUES ($1, $2)`,
+            [week, chartJSON]
+          );
+          console.log(test);
+        }
+      }
+      console.log("d");
+      const songSearch = getSongSearch(chart, req.query);
+      console.log("e");
+      const vid = await getSearchResult(songSearch);
+      console.log("f");
+      if (vid) {
+        console.log("g");
+        const { vidId, vidLength, title, artist } = vid;
+        return res.json({ vidId, vidLength, title, artist });
+      } else {
+        console.log("h");
+        return res.json({});
+      }
+    }
+  } catch (e) {
+    console.log("i");
+    return res.json({ error: e });
+  }
 });
 
 app.get("/api/vid", ensureLoggedIn, async (req, res) => {
