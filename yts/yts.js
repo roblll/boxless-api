@@ -92,7 +92,7 @@ async function getSearchResult(search) {
       return { vidId, vidLength, title, artist };
     }
   } catch (e) {
-    console.log("error");
+    console.log("errors");
     console.log(e);
     return undefined;
   }
