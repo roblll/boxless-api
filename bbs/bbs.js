@@ -43,24 +43,20 @@ async function getChart(name, date) {
 
     const $ = cheerio.load(html);
 
-    let chartListItems;
-    try {
-      chartListItems = JSON.parse($("#charts").attr("data-charts"));
-    } catch (err) {
-      chartListItems = $(".chart-list__element");
-    }
-    if (!(chartListItems && chartListItems.length)) {
-      chartListItems = $(".chart-list-item__first-row");
-    }
+    const chartItems = $(".o-chart-results-list-row-container");
+    for (let i = 0; i < chartItems.length; i += 1) {
+      const infoContainer = chartItems[i].children[1];
+      const titleAndArtistContainer =
+        infoContainer.children[7].children[1].children[1];
+      const posInfo = infoContainer.children[7].children[1];
 
-    for (let i = 0; i < chartListItems.length; i += 1) {
       chart.songs.push({
-        title:
-          chartListItems[i].title ||
-          getTitleFromChartItem(chartListItems[i], $),
-        artist:
-          chartListItems[i].artist_name ||
-          getArtistFromChartItem(chartListItems[i], $),
+        rank: parseInt(
+          infoContainer.children[1].children[1].children[0].data.trim(),
+          10
+        ),
+        title: titleAndArtistContainer.children[1].children[0].data.trim(),
+        artist: titleAndArtistContainer.children[3].children[0].data.trim(),
       });
     }
 
