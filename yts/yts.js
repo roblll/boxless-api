@@ -13,71 +13,34 @@ async function getSearchResult(search) {
     const formattedSearchTerm = searchTerm.replace(/ /g, "+");
     const requestURL = `${YOUTUBE_SEARCH_URL}${formattedSearchTerm}`;
 
-    const browser = await puppeteer.launch({
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
-    const page = await browser.newPage();
-    await page.goto(requestURL);
-    const content = await page.content();
+    const response = await axios.get(requestURL);
+    const html = response.data;
 
-    const $ = cheerio.load(content);
+    const vidIdIndex = html.search("videoRenderer");
+    const vidId = html.slice(vidIdIndex + 27, vidIdIndex + 38);
 
-    const vidIds = [];
-    const vidLengths = [];
+    const timeIndex = html.search(" ago ");
+    const time = html.slice(timeIndex, timeIndex + 50);
 
-    $("a").each(function (index, elem) {
-      if (
-        elem.attribs.class ===
-        "yt-simple-endpoint style-scope ytd-video-renderer"
-      ) {
-        if (elem.attribs.href) {
-          if (elem.attribs.href.length === 20) {
-            vidIds.push(elem.attribs.href.slice(9));
-
-            const label = elem.children[0].parent.attribs["aria-label"];
-
-            let seconds = 0;
-            const indexOfSeconds = label.lastIndexOf("second") - 2;
-            if (indexOfSeconds > 0) {
-              seconds = parseInt(
-                `${label[indexOfSeconds - 1]}${label[indexOfSeconds]}`
-              );
-            }
-
-            let minutes = 0;
-            const indexOfMinutes = label.lastIndexOf("minute") - 2;
-            if (indexOfMinutes > 0) {
-              minutes = parseInt(
-                `${label[indexOfMinutes - 1]}${label[indexOfMinutes]}`
-              );
-            }
-
-            let hours = 0;
-            const indexOfHours = label.lastIndexOf("hour") - 2;
-            if (indexOfHours > 0) {
-              hours = parseInt(
-                `${label[indexOfHours - 1]}${label[indexOfHours]}`
-              );
-            }
-
-            vidLengths.push(hours * 60 * 60 + minutes * 60 + seconds);
-          }
-        }
-      }
-    });
-
-    browser.close();
-
-    let vidId = "";
-    let vidLength = "";
-
-    for (let i = 0; i < vidIds.length; i++) {
-      if (vidIds[i] && vidLengths[i] !== 0) {
-        vidId = vidIds[i];
-        vidLength = vidLengths[i];
-        break;
-      }
+    const secondsIndex = time.search("second") - 3;
+    let seconds = 0;
+    if (secondsIndex > 0) {
+      seconds = parseInt(time.slice(secondsIndex, secondsIndex + 2));
     }
+
+    const minutesIndex = time.search("minute") - 3;
+    let minutes = 0;
+    if (minutesIndex > 0) {
+      minutes = parseInt(time.slice(minutesIndex, minutesIndex + 2));
+    }
+
+    const hoursIndex = time.search("hour") - 3;
+    let hours = 0;
+    if (hoursIndex > 0) {
+      hours = parseInt(time.slice(hoursIndex, hoursIndex + 2));
+    }
+
+    const vidLength = hours * 60 * 60 + minutes * 60 + seconds;
 
     if (vidId === "" || vidLength === "") {
       return undefined;
