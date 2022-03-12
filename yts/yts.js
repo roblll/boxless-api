@@ -1,7 +1,7 @@
-const request = require("request");
-const cheerio = require("cheerio");
+// const request = require("request");
+// const cheerio = require("cheerio");
 const axios = require("axios");
-const puppeteer = require("puppeteer");
+// const puppeteer = require("puppeteer");
 
 const YOUTUBE_BASE_URL = "http://www.youtube.com";
 const YOUTUBE_SEARCH_URL = `${YOUTUBE_BASE_URL}/results?search_query=`;

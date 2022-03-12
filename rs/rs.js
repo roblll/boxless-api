@@ -1,5 +1,5 @@
-const cheerio = require("cheerio");
-const puppeteer = require("puppeteer");
+// const cheerio = require("cheerio");
+// const puppeteer = require("puppeteer");
 
 const REDDIT_BASE_URL = "http://www.reddit.com";
 
