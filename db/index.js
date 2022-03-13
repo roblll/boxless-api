@@ -6,7 +6,7 @@ const clientOptions = {
     process.env.DATABASE_URL || "postgresql://localhost/boxless",
 };
 if (process.env.DATABASE_URL) {
-  clientOptions[ssl] = {
+  clientOptions["ssl"] = {
     rejectUnauthorized: false,
   };
 }
