@@ -182,13 +182,24 @@
 // });
 
 const express = require("express");
-const app = express();
+const morgan = require("morgan");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+
 const PORT = process.env.PORT || 3001;
+const app = express();
+const path = require("path");
+
+app.use(bodyParser.json());
+app.use(morgan("tiny"));
+app.use(cors());
+const db = require("./db");
+const jwt = require("jsonwebtoken");
 
 app.get("/", (req, res) => {
-  res.send("Hello");
+  res.send("Hello!");
 });
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`);
+  console.log(`Server is listening on port ${PORT}`);
 });
