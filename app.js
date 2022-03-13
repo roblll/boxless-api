@@ -186,9 +186,9 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Hello");
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}`);
 });
