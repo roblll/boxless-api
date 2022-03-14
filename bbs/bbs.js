@@ -1,4 +1,4 @@
-// const cheerio = require("cheerio");
+const cheerio = require("cheerio");
 const axios = require("axios");
 
 const BILLBOARD_BASE_URL = "http://www.billboard.com";

@@ -1,5 +1,5 @@
 // const request = require("request");
-// const cheerio = require("cheerio");
+const cheerio = require("cheerio");
 const axios = require("axios");
 // const puppeteer = require("puppeteer");
 
