@@ -70,6 +70,7 @@ async function getChart(name, date) {
     // console.log(e);
     // return "There was an error in bbs";
     console.log("bbs error");
+    console.log(e);
     // return e;
     // console.log(e.message);
     throw e;
