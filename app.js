@@ -13,11 +13,14 @@ app.use(cors());
 const db = require("./db");
 const jwt = require("jsonwebtoken");
 
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
 const users = {
-  7734805065: "rl",
-  7734804488: "al",
+  [process.env.USER]: process.env.PASSWORD,
 };
-const SECRET = "NEVER EVER MAKE THIS PUBLIC IN PRODUCTION!";
+const SECRET = process.env.SECRET;
 
 const {
   getSearchResult,
@@ -141,8 +144,7 @@ app.get("/api/searchvids", ensureLoggedIn, async (req, res) => {
 app.post("/api/login", async (req, res) => {
   try {
     const { initials, phone } = req.body;
-    console.log(initials, phone);
-    if (users[phone] === initials) {
+    if (users[initials] === phone) {
       const token = jwt.sign({ name: initials }, SECRET, {
         expiresIn: 60 * 60 * 24,
       });
