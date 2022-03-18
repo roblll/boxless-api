@@ -143,9 +143,9 @@ app.get("/api/searchvids", ensureLoggedIn, async (req, res) => {
 
 app.post("/api/login", async (req, res) => {
   try {
-    const { initials, phone } = req.body;
-    if (users[initials] === phone) {
-      const token = jwt.sign({ name: initials }, SECRET, {
+    const { username, password } = req.body;
+    if (users[username] === password) {
+      const token = jwt.sign({ name: username }, SECRET, {
         expiresIn: 60 * 60 * 24,
       });
       return res.json({ token });
