@@ -11,7 +11,6 @@ async function getSearchResult(search) {
     const { searchTerm, title, artist } = search;
 
     const formattedSearchTerm = searchTerm.replace(/ /g, "+") + "hq+audio+";
-    console.log(formattedSearchTerm);
     const requestURL = `${YOUTUBE_SEARCH_URL}${formattedSearchTerm}`;
 
     const response = await axios.get(requestURL);
@@ -54,44 +53,73 @@ async function getSearchResult(search) {
   }
 }
 
+function getIndicesOf(searchStr, str) {
+  var searchStrLen = searchStr.length;
+  if (searchStrLen == 0) {
+    return [];
+  }
+  var startIndex = 0,
+    index,
+    indices = [];
+  let count = 0;
+  while ((index = str.indexOf(searchStr, startIndex)) > -1) {
+    indices.push(index);
+    startIndex = index + searchStrLen;
+    count += 1;
+    if (count === 10) break;
+  }
+  return indices;
+}
+
 async function getSearchVids(searchTerm) {
   try {
     const formattedSearchTerm = searchTerm.replace(/ /g, "+");
     const requestURL = `${YOUTUBE_SEARCH_URL}${formattedSearchTerm}`;
 
-    const browser = await puppeteer.launch({
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
-    const page = await browser.newPage();
-    await page.goto(requestURL);
-    const content = await page.content();
-    const $ = cheerio.load(content);
+    const response = await axios.get(requestURL);
+    const html = response.data;
 
-    const vidIds = [];
-    const vidTitles = [];
+    const indices = getIndicesOf("videoRenderer", html, true);
+
     const vids = [];
 
-    $("a").each(function (index, elem) {
-      if (
-        elem.attribs.class ===
-        "yt-simple-endpoint style-scope ytd-video-renderer"
-      ) {
-        if (elem.attribs.href) {
-          if (elem.attribs.href.length === 20) {
-            vidIds.push(elem.attribs.href.slice(9));
-            vidTitles.push(elem.attribs.title);
-          }
-        }
-      }
-    });
+    for (const i of indices) {
+      const vidId = html.slice(i + 27, i + 38);
 
-    browser.close();
+      const titleStart = html.indexOf(`"title":{"runs":[{"text":"`, i);
+      const titleEnd = html.indexOf(`"}],"accessibility"`, titleStart);
+      const title = html.slice(titleStart + 26, titleEnd);
 
-    for (i = 0; i < vidIds.length; i++) {
-      if (vidIds[i]) {
-        vids.push({ vidId: vidIds[i], title: vidTitles[i] });
+      const timeStart = html.indexOf(
+        `"lengthText":{"accessibility":{"accessibilityData":{"label":"`,
+        titleEnd
+      );
+      const timeStop = html.indexOf(`}},"simpleText":"`, timeStart);
+      const time = "  " + html.slice(timeStart + 61, timeStop - 1);
+
+      const secondsIndex = time.search("second") - 3;
+      let seconds = 0;
+      if (secondsIndex > 0) {
+        seconds = parseInt(time.slice(secondsIndex, secondsIndex + 2));
       }
+
+      const minutesIndex = time.search("minute") - 3;
+      let minutes = 0;
+      if (minutesIndex > 0) {
+        minutes = parseInt(time.slice(minutesIndex, minutesIndex + 2));
+      }
+
+      const hoursIndex = time.search("hour") - 3;
+      let hours = 0;
+      if (hoursIndex > 0) {
+        hours = parseInt(time.slice(hoursIndex, hoursIndex + 2));
+      }
+
+      const vidLength = hours * 60 * 60 + minutes * 60 + seconds;
+
+      vids.push({ vidId, title, vidLength });
     }
+
     if (vids.length === 0) {
       return { searchTerm, vids: undefined };
     } else {
