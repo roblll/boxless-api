@@ -141,6 +141,96 @@ app.get("/api/searchvids", ensureLoggedIn, async (req, res) => {
   }
 });
 
+app.get("/api/pick", ensureLoggedIn, async (req, res) => {
+  try {
+    const date = getRandDate(req.query);
+    const week = getWeek(date);
+    const chartName = getChartsSelected(req.query);
+
+    let chart = null;
+
+    const genre = getGenre(chartName);
+
+    if (genre === "hiphop" || genre === "house" || genre === "trance") {
+      const {
+        vidId,
+        hiphopAfter,
+        hiphopCount,
+        houseAfter,
+        houseCount,
+        tranceAfter,
+        tranceCount,
+      } = await getRVid(
+        genre,
+        req.query.hiphopAfter,
+        req.query.hiphopCount,
+        req.query.houseAfter,
+        req.query.houseCount,
+        req.query.tranceAfter,
+        req.query.tranceCount
+      );
+      const { title } = await getTitle(vidId);
+      return res.json({
+        vidId,
+        title,
+        hiphopAfter,
+        hiphopCount,
+        houseAfter,
+        houseCount,
+        tranceAfter,
+        tranceCount,
+        genre,
+      });
+    } else {
+      const results = await db.query(`SELECT * FROM ${genre} WHERE week=$1`, [
+        week,
+      ]);
+
+      if (results.rows.length > 0) {
+        chart = results.rows[0].data;
+      } else {
+        chart = await getChart(chartName, week);
+        if (chart.length > 0) {
+          const chartJSON = JSON.stringify(chart);
+          const test = await db.query(
+            `INSERT INTO ${genre}(week, data) VALUES ($1, $2)`,
+            [week, chartJSON]
+          );
+          console.log(test);
+        }
+      }
+
+      let songSearch1 = getSongSearch(chart, req.query);
+      let songSearch2 = getSongSearch(chart, req.query);
+      while (songSearch1.searchTerm === songSearch2.searchTerm) {
+        songSearch2 = getSongSearch(chart, req.query);
+      }
+
+      const vid1 = await getSearchResult(songSearch1);
+      const vid2 = await getSearchResult(songSearch2);
+
+      console.log(vid1, vid2);
+
+      if (vid1 && vid2) {
+        return res.json({
+          vid1Id: vid1.vidId,
+          vid1Length: vid1.vidLength,
+          title1: vid1.title,
+          artist1: vid1.artist,
+          vid2Id: vid2.vidId,
+          vid2Length: vid2.vidLength,
+          title2: vid2.title,
+          artist2: vid2.artist,
+        });
+      } else {
+        return res.json({});
+      }
+    }
+  } catch (e) {
+    return res.json({ error: e });
+  }
+});
+
 app.post("/api/login", async (req, res) => {
   try {
     const { username, password } = req.body;
