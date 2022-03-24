@@ -117,7 +117,10 @@ async function getSearchVids(searchTerm) {
 
       const vidLength = hours * 60 * 60 + minutes * 60 + seconds;
 
-      vids.push({ vidId, title, vidLength });
+      const rawTitle = `"${title}"`;
+      const parsedTitle = decodeURIComponent(JSON.parse(rawTitle));
+
+      vids.push({ vidId, title: parsedTitle, vidLength });
     }
 
     if (vids.length === 0) {
