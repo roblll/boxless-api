@@ -10,7 +10,7 @@ async function getSearchResult(search) {
   try {
     const { searchTerm, title, artist } = search;
 
-    const formattedSearchTerm = searchTerm.replace(/ /g, "+") + "hq+audio+";
+    const formattedSearchTerm = searchTerm.replace(/ /g, "+");
     const requestURL = `${YOUTUBE_SEARCH_URL}${formattedSearchTerm}`;
 
     const response = await axios.get(requestURL);

@@ -58,12 +58,19 @@ const getChartsSelected = (query) => {
 };
 
 const getSongSearch = (chart, query) => {
-  const { rankMin, rankMax, lyrics, clean, karaoke } = query;
+  const { rankMin, rankMax, mode, clean } = query;
   const rank = getRank(rankMin, rankMax, chart);
   let options = "";
-  if (lyrics === "true") options += " lyrics";
-  if (clean === "true") options += " clean";
-  if (karaoke === "true") options += " karaoke";
+  if (clean === "true") {
+    options += " clean";
+  }
+  if (mode === "audio") {
+    options += " hq audio";
+  } else if (mode === "video") {
+    options += " music video";
+  } else if (mode === "lyrics") {
+    options += " lyrics";
+  }
   const title = chart[rank - 1].title;
   const artist = chart[rank - 1].artist;
   const searchTerm = `${title} ${artist} ${options}`;
