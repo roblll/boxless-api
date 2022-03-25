@@ -3,7 +3,7 @@ const cheerio = require("cheerio");
 const axios = require("axios");
 // const puppeteer = require("puppeteer");
 
-const YOUTUBE_BASE_URL = "http://www.youtube.com";
+const YOUTUBE_BASE_URL = "https://www.youtube.com";
 const YOUTUBE_SEARCH_URL = `${YOUTUBE_BASE_URL}/results?search_query=`;
 
 async function getSearchResult(search) {
