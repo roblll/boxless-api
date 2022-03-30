@@ -2,7 +2,7 @@
 
 Web app available at
 
-https://boxlessmusic.com/?username=rob&password=lenon
+[boxlesslessmusic.com](https://boxlessmusic.com/?username=rob&password=lenon)
 
 ## Description
 
